@@ -11,32 +11,45 @@
     this.render();
   };
 
+  Board.prototype.makeApples = function() {
+    if (Math.random() > 0.8) {
+      var i = Math.floor(20 * Math.random());
+      var j = Math.floor(20 * Math.random());
+      if (!this.checkIfApple(i, j) && !this.snake.checkIfSnake(i, j)) {
+        this.apples.push([i, j]);
+      }
+    }
+  };
+
+  Board.prototype.checkIfApple = function(i, j) {
+    var isApple = false;
+    for (var k = 0; k < this.apples.length; k++) {
+      if (this.apples[k][0] === i && this.apples[k][1] === j) {
+        isApple = true;
+      }
+    }
+
+    return isApple;
+  };  
+
   Board.prototype.render = function() {
     for (var i = 0; i < 20; i++) {
       for (var j = 0; j < 20; j++) {
-        if (this.checkIfSnake(i, j)) {
-          this.grid[i][j] = "S";
+        if (this.snake.checkIfSnake(i, j)) {
+          $('.cell').filter(function (){          
+            return $(this).data('rowIdx') === i && $(this).data('colIdx') === j
+          }).addClass('snake');
+        } else if (this.checkIfApple(i, j)) {
+          $('.cell').filter(function (){          
+            return $(this).data('rowIdx') === i && $(this).data('colIdx') === j
+          }).addClass('apple'); 
         } else {
-          this.grid[i][j] = "_";
+          $('.cell').filter(function (){          
+            return $(this).data('rowIdx') === i && $(this).data('colIdx') === j
+          }).removeClass('snake');
         }
       }
     }
-    $('.container').html("");
-    this.grid.forEach( function(row) {
-      $('.container').append(row.join(" ")+"<br>");
-    });
-  };
-
-  Board.prototype.checkIfSnake = function(i, j) {
-    var segs = this.snake.segments;
-    var isSnake = false;
-    for (var k = 0; k < segs.length; k++) {
-      if (segs[k][0] === i && segs[k][1] === j) {
-        isSnake = true;
-      }
-    }
-
-    return isSnake;
   };
 
   Board.prototype.setupGrid = function() {
@@ -47,17 +60,6 @@
                   .appendTo($('.row' + i));
       }
     }
-
-    //
-    // var grid = new Array (gridSize);
-    // for (var i = 0; i < gridSize; i++) {
-    //   grid[i] = new Array(gridSize);
-    //   for (var j = 0; j < gridSize; j++) {
-    //     grid[i][j] = "_";
-    //   }
-    // }
-    //
-    // return grid;
   };
 
 })();

@@ -8,33 +8,38 @@
     this.board = new Snake.Board($el);
     this.constructKeyBindings();
     this.step;
-    // setInterval(this.step.bind(this), 5000);
+    setInterval(this.step.bind(this), 500);
   };
 
   View.prototype.constructKeyBindings = function() {
-    this.$el.on('keydown', function(event) {
+    $('body').on('keypress', function(event) {
       this.handleKeyEvent(event);
     }.bind(this));
   };
 
   View.prototype.step = function() {
-    this.board.snake.move();
+    var movedTo = this.board.snake.move();
+    if (this.board.checkIfApple(movedTo[0], movedTo[1])) {
+      
+
+    }
+    this.board.makeApples();
     this.board.render();
   };
 
   View.prototype.handleKeyEvent = function(event) {
     var code = event.keyCode;
     switch (code) {
-      case 37:
+      case 97:
         this.board.snake.turn("W");
         break;
-      case 38:
+      case 119:
         this.board.snake.turn("N");
         break;
-      case 39:
+      case 100:
         this.board.snake.turn("E");
         break;
-      case 40:
+      case 115:
         this.board.snake.turn("S");
         break;
       default:
